@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 
-//Класс башни, который содержит в себе стек колец (используем стек, тк нам мы перекладываем только верхнее кольцо за раз)
+//Класс башни, который содержит в себе стек колец (используем стек, тк мы перекладываем только верхнее кольцо за раз)
 class Tower{
     private Stack<int> _rings;
     
@@ -23,12 +23,10 @@ class Tower{
         Console.WriteLine();
     }
     
-    //Метод для вытаскивания верхнего кольца из башни
     public int Pop(){
         return _rings.Pop();
     }
     
-    //Метод, помещающий кольцо в башню
     public void Push(int ring){
         //Если перекладываемое кольцо больше верхнего, вылетает исключение
         if(_rings.Count == 0 || _rings.Peek() >= ring) _rings.Push(ring);
@@ -39,12 +37,10 @@ class Tower{
     
 };
 
-//Класс, который содержит в себе 3 башни с некоторым кол-вом колец
 class Towers{
     public Tower[] _towers;
     private int _towers_amount = 3;
     
-    //Конструктор для создание 3 башен с данным кол-вом колец на первой башне.
     public Towers(int rings_amount = 10){
         _towers = new Tower[_towers_amount];
         _towers[0] = new Tower(rings_amount);
@@ -53,16 +49,13 @@ class Towers{
         }
     }
     
-    //Перекладывание кольцо из одной башни в другую
     public void MoveRing(Tower from, Tower to){
         int ring;
-        //Вытаскивание кольца из башни (если в башне нету колец, вылетает исключение)
         try{
             ring = from.Pop();  
         }catch(InvalidOperationException exception){
             throw exception;
         }
-        //Перекладывание кольца в башню (если в башне верхнее кольцо меньше перекладываемого, оно перекладывается обратно и вылетает исключение)
         try{ 
             to.Push(ring);
         }catch(InvalidOperationException exception){
@@ -70,18 +63,13 @@ class Towers{
             throw exception;
         }
     }
-    
-    //Перекладывание колец из одной башни в другую с использованием второстепенной
+
     public void MoveRings(int rings_amount, Tower from, Tower to, Tower independ){
-        //Если в башне не осталось дисков, перекладывание(рекурсия) окончено
         if(rings_amount == 0){
             return;
         }
-        //Перекладывание стека из n-1 дисков на независимую ось
         MoveRings(rings_amount-1, from: from, to: independ, independ: to);
-        //Перекладывание n-го диска на нужную ось
         MoveRing(from, to);
-        //Перекладывание стека из n-1 дисков на нужную ось
         MoveRings(rings_amount-1, from: independ, to: to, independ: from);
     }
     
